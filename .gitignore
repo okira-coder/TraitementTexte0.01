@@ -1,0 +1,35 @@
+# Environnements Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Environnement virtuel
+env/
+venv/
+.venv/
+
+# Configuration locale
+*.env
+*.local
+*.DS_Store
+
+# Fichiers de logs
+*.log
+*.sqlite3
+
+# Cache de l'éditeur
+.idea/
+.vscode/
+*.swp
+
+# Dépendances et builds
+*.egg-info/
+build/
+dist/
+
+# Fichiers système
+Thumbs.db
+.DS_Store
+
+# Cache de FastAPI/Uvicorn (si applicable)
+*.pyc
