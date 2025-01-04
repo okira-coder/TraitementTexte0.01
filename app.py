@@ -30,7 +30,7 @@ async def nettoyer_texte(request: TextRequest):
 
         # Supprimer les espaces en début et fin de ligne
         texte_propre = "\n".join(ligne.strip() for ligne in texte_sans_lignes_vides.splitlines())
-
+        console.log("texte_propre: ",texte_propre)
         return {"texte_nettoye": texte_propre}
     
     except Exception as e:
