@@ -1,9 +1,21 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import re
+from fastapi.middleware.cors import CORSMiddleware
+
+
 
 # Initialiser l'application FastAPI
 app = FastAPI()
+
+# Ajout de CORSMiddleware à FastAPI
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Permet à toutes les origines d'accéder
+    allow_credentials=True,
+    allow_methods=["*"],  # Permet toutes les méthodes HTTP
+    allow_headers=["*"],  # Permet tous les en-têtes
+)
 
 # Modèle pour la requête POST
 class TextRequest(BaseModel):
