@@ -1,32 +1,22 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from flask import Flask, request, jsonify
 import re
-from fastapi.middleware.cors import CORSMiddleware
 
-
-
-# Initialiser l'application FastAPI
-app = FastAPI()
-
-# Ajout de CORSMiddleware à FastAPI
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Permet à toutes les origines d'accéder
-    allow_credentials=True,
-    allow_methods=["*"],  # Permet toutes les méthodes HTTP
-    allow_headers=["*"],  # Permet tous les en-têtes
-)
-
-# Modèle pour la requête POST
-class TextRequest(BaseModel):
-    texte: str
+# Initialiser l'application Flask
+app = Flask(__name__)
 
 # Route pour nettoyer le texte
-@app.post("/nettoyer-texte/")
-async def nettoyer_texte(request: TextRequest):
+@app.route("/nettoyer-texte/", methods=["POST"])
+def nettoyer_texte():
     try:
+        # Récupérer les données JSON envoyées par le client
+        data = request.get_json()
+
+        # Vérifier si la clé 'texte' existe dans la requête
+        if "texte" not in data:
+            return jsonify({"error": "Le champ 'texte' est requis"}), 400
+        
         # Texte brut à nettoyer
-        texte = request.texte
+        texte = data["texte"]
 
         # Supprimer les URL
         texte_sans_url = re.sub(r'http[s]?://\S+', '', texte)
@@ -42,15 +32,14 @@ async def nettoyer_texte(request: TextRequest):
 
         # Supprimer les espaces en début et fin de ligne
         texte_propre = "\n".join(ligne.strip() for ligne in texte_sans_lignes_vides.splitlines())
-        print("texte_propre: ",texte_propre)
 
+        # Retourner la réponse sous forme JSON
         response_data = {"texte_nettoye": texte_propre}
-        return response_data 
-    
+        return jsonify(response_data)
+
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        return jsonify({"error": str(e)}), 500
 
 # Point d'entrée pour exécuter le serveur
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    app.run(host="0.0.0.0", port=8000)
